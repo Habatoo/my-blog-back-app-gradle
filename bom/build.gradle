@@ -17,7 +17,6 @@ publishing {
     }
 }
 
-
 dependencies {
     constraints {
         api 'org.projectlombok:lombok:1.18.42'
@@ -33,11 +32,10 @@ dependencies {
         api 'com.h2database:h2:2.4.240'
         api 'org.postgresql:postgresql:42.7.3'
         api 'commons-fileupload:commons-fileupload:1.5'
-        api 'commons-io:commons-io:2.15.1'
+        api 'commons-io:commons-io:2.20.0'
         api 'org.slf4j:slf4j-api:2.0.17'
         api 'ch.qos.logback:logback-classic:1.5.18'
 
-        // тестовые зависимости
         api 'junit:junit:4.13.2'
         api 'org.junit.jupiter:junit-jupiter:5.10.0'
         api 'org.hamcrest:hamcrest:3.0'

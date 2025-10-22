@@ -1,7 +1,5 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.6'
-    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 repositories {
@@ -12,42 +10,38 @@ repositories {
 dependencies {
     implementation platform(project(':bom'))
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    implementation project(':core')
+    implementation project(':api')
 
-    implementation 'org.springframework:spring-webmvc'
+    implementation 'org.springframework:spring-context'
+
+    testImplementation 'junit:junit'
+    testImplementation 'org.testcontainers:testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.slf4j:slf4j-simple'
+    testImplementation 'org.springframework:spring-test'
+    testImplementation 'org.springframework:spring-webmvc'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'javax.annotation:javax.annotation-api'
+    testImplementation 'jakarta.servlet:jakarta.servlet-api'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.projectlombok:lombok'
     implementation 'org.springframework.data:spring-data-jdbc'
-
-    compileOnly 'jakarta.servlet:jakarta.servlet-api'
-    implementation 'javax.annotation:javax.annotation-api'
-
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'org.flywaydb:flyway-database-postgresql'
-
     implementation 'com.zaxxer:HikariCP'
     implementation 'org.postgresql:postgresql'
-
     implementation 'commons-fileupload:commons-fileupload'
     implementation 'commons-io:commons-io'
-
     implementation 'org.slf4j:slf4j-api'
     runtimeOnly 'ch.qos.logback:logback-classic'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.hamcrest:hamcrest'
-    testImplementation 'org.mockito:mockito-junit-jupiter'
-    testImplementation 'org.mockito:mockito-inline'
-    testImplementation 'org.assertj:assertj-core'
-    testImplementation 'org.springframework:spring-test'
-    testImplementation 'org.slf4j:slf4j-simple'
-    testImplementation 'com.h2database:h2'
 }
 
-springBoot {
-    mainClass = 'io.github.habatoo.Application'
+jar {
+    enabled = true
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -57,4 +51,20 @@ tasks.withType(JavaCompile).configureEach {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    shouldRunAfter(tasks.test)
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+    }
+}
+
+tasks.check {
+    dependsOn tasks.named('integrationTest')
 }
